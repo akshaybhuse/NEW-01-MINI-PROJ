@@ -3,6 +3,7 @@ package com.akshay.service;
 import com.akshay.entity.Plan;
 import com.akshay.entity.PlanCategory;
 import com.akshay.exception.PlanIdNotFoundException;
+import com.akshay.exception.PlanNotFoundException;
 import com.akshay.repo.PlanCategoryRepo;
 import com.akshay.repo.PlanRepo;
 import org.springframework.beans.factory.annotation.Autowired;
