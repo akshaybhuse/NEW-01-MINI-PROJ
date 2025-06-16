@@ -1,18 +1,29 @@
 server:
-    port: 8081
+  port: 8081
 spring:
-    application:
-        name: 01-PLANS-API
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        password: root
-        url: jdbc:mysql:///database-01-plans-api
-        username: root
-    jpa:
-        hibernate:
-            ddl-auto: update
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.MySQL8Dialect
-                format_sql: true
-        show-sql: true
+  application:
+    name: 01-PLANS-API
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: root
+    url: jdbc:mysql:///database-01-plans-api
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+
+plan-api:
+  messages:
+    planSaveSuccess: Plan saved with ID
+    planSaveFail: Plan could not be saved
+    planUpdateSuccess: Plan updated
+    planUpdateFail: Plan not updated
+    planDeleteSuccess: Plan deleted with ID
+    planDeleteFail: Plan not deleted
+    planStatusChangeSuccess: Plan Status changed
+    planStatusChangeFail: Plan Status not changed
