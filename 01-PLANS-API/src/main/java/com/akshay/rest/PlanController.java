@@ -1,8 +1,9 @@
 package com.akshay.rest;
 
+import com.akshay.constants.AppConstants;
 import com.akshay.entity.Plan;
+import com.akshay.properties.AppProperties;
 import com.akshay.service.IPlanService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,15 @@ import java.util.Map;
 @RequestMapping("/plans/api")
 public class PlanController {
 
-    @Autowired
+    private Map<String, String> messages;
+
     private IPlanService service;
+
+    public PlanController(IPlanService service, AppProperties appProperties) {
+        this.service = service;
+        this.messages = appProperties.getMessages();
+        System.out.println(this.messages);
+    }
 
     @GetMapping("/categories")
     public ResponseEntity<Map<Integer, String>> getPlanCategories() {
@@ -35,72 +43,70 @@ public class PlanController {
 
     @PostMapping("/save")
     public ResponseEntity<String> savePlan(@RequestBody Plan plan) {
-
         boolean isSaved = service.savePlan(plan);
 
         if (isSaved) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Plan saved with ID: " + plan.getPlanId());
+                    .body(messages.get(AppConstants.PLAN_SAVE_SUCC) + plan.getPlanId());
         }
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Plan could not be saved");
+                .body(AppConstants.PLAN_SAVE_FAIL);
     }
 
     @GetMapping("/plans")
-    public ResponseEntity<List<Plan>> getAllPlans(){
+    public ResponseEntity<List<Plan>> getAllPlans() {
         List<Plan> allPlans = service.getAllPlans();
-        return new ResponseEntity<>(allPlans,HttpStatus.OK);
+        return new ResponseEntity<>(allPlans, HttpStatus.OK);
 
     }
 
     @GetMapping("/plan/{planId}")
-    public ResponseEntity<Plan> editPlan(@PathVariable Integer planId){
+    public ResponseEntity<Plan> editPlan(@PathVariable Integer planId) {
         Plan planByPlanId = service.getPlanByPlanId(planId);
-        return new ResponseEntity<>(planByPlanId,HttpStatus.OK);
+        return new ResponseEntity<>(planByPlanId, HttpStatus.OK);
 
     }
 
     @PutMapping("/plan")
-    public ResponseEntity<String> updatePlan(@RequestBody Plan plan){
+    public ResponseEntity<String> updatePlan(@RequestBody Plan plan) {
         Boolean updatedPlan = service.updatePlan(plan);
-        if (updatedPlan){
+        if (updatedPlan) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Plan updated");
-        }else {
+                    .body(messages.get(AppConstants.PLAN_UPDATE_SUCC));
+        } else {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Plan not updated");
+                    .body(messages.get(AppConstants.PLAN_UPDATE_FAIL));
         }
     }
 
     @DeleteMapping("/plan/{planId}")
-    public ResponseEntity<String> deletePlan(@PathVariable Integer planId){
+    public ResponseEntity<String> deletePlan(@PathVariable Integer planId) {
         Boolean deletedPlan = service.deletePlanByPlanId(planId);
-        if (deletedPlan){
+        if (deletedPlan) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("Plan deleted with ID: "+planId);
-        }else {
+                    .body(messages.get(AppConstants.PLAN_DELETE_SUCC) + planId);
+        } else {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("Plan not deleted");
+                    .body(messages.get(AppConstants.PLAN_DELETE_FAIL));
         }
     }
 
     @PatchMapping("/active-status/{planId}/{activeStatus}")
-    public ResponseEntity<String> changeActiveStatus(Integer planId,String activeStatus){
+    public ResponseEntity<String> changeActiveStatus(Integer planId, String activeStatus) {
         Boolean changedPlanStatus = service.changePlanStatus(planId, activeStatus);
-        if (changedPlanStatus){
+        if (changedPlanStatus) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Plan Status changed");
+                    .body(messages.get(AppConstants.PLAN_STATUS_CHANGE_SUCC));
         }
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Plan Status not changed");
+                .body(messages.get(AppConstants.PLAN_STATUS_CHANGE_FAIL));
     }
-
 }
