@@ -3,7 +3,6 @@ package com.akshay.service;
 import com.akshay.entity.Plan;
 import com.akshay.entity.PlanCategory;
 import com.akshay.exception.PlanIdNotFoundException;
-import com.akshay.exception.PlanNotFoundException;
 import com.akshay.repo.PlanCategoryRepo;
 import com.akshay.repo.PlanRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,10 @@ public class PlanServiceImpl implements IPlanService {
     @Override
     public Map<Integer, String> getPlanCategories() {
         List<PlanCategory> planCategoryList = planCategoryRepo.findAll();
-        Map<Integer, String> categoryMap = planCategoryList.stream()
+        return planCategoryList.stream()
                 .collect(Collectors.toMap(
                         PlanCategory::getCategoryId,
                         PlanCategory::getCategoryName));
-        return categoryMap;
     }
 
     @Override
@@ -52,8 +50,7 @@ public class PlanServiceImpl implements IPlanService {
 
     @Override
     public List<Plan> getAllPlans() {
-        List<Plan> allPlans = planRepo.findAll();
-        return allPlans;
+        return planRepo.findAll();
     }
 
     @Override
@@ -79,7 +76,7 @@ public class PlanServiceImpl implements IPlanService {
 
     @Override
     public Boolean deletePlanByPlanId(Integer planId) {
-        Boolean status = false;
+        boolean status = false;
         try {
             planRepo.deleteById(planId);
             status = true;
@@ -92,8 +89,7 @@ public class PlanServiceImpl implements IPlanService {
     @Override
     public Boolean changePlanStatus(Integer planId, String activeStatus) {
         return planRepo.findById(planId)
-                .map(
-                        plan -> {
+                .map(plan -> {
                             plan.setPlanActiveSwitch(activeStatus);
                             planRepo.save(plan);
                             return true;
